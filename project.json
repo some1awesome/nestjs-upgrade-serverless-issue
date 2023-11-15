@@ -19,6 +19,7 @@
         "assets": [
           "src/assets"
         ],
+		"generatePackageJson": true,
         "isolatedConfig": true,
         "webpackConfig": "webpack.config.js"
       },

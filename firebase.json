@@ -1,0 +1,6 @@
+{
+	"functions": {
+		"source": "dist/testathing",
+		"runtime": "nodejs16"
+	}
+}

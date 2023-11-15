@@ -3,18 +3,26 @@
  * This is only a minimal backend to get started.
  */
 
-import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-
+import express from 'express';
 import { AppModule } from './app/app.module';
+import { ExpressAdapter } from '@nestjs/platform-express';
+import { onRequest } from 'firebase-functions/v2/https';
 
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  const globalPrefix = 'api';
-  app.setGlobalPrefix(globalPrefix);
-  const port = process.env.PORT || 3000;
-  await app.listen(port);
-  Logger.log(`🚀 Application is running on: http://localhost:${port}/${globalPrefix}`);
+async function bootstrap(expressInstance: express.Express) {
+	const app = await NestFactory.create(
+		AppModule,
+		new ExpressAdapter(expressInstance)
+	);
+
+	app.enableCors();
+
+	await app.init();
+	return app;
 }
 
-bootstrap();
+const server: express.Express = express();
+bootstrap(server);
+
+export const testApi = onRequest({ cors: true, cpu: 4, memory: '16GiB', timeoutSeconds: 3600 }, server);
+
